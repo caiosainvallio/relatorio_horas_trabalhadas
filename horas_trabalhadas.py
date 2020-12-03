@@ -82,11 +82,8 @@ while True:
         arquivo_relatorio_data: str = f'horas_{meses_dict[mes_relatorio]}_{ano_relatorio}.csv'
         path: str = 'dados/'
 
-        # testa o path
-        if not os.path.exists(path+arquivo_relatorio_data):
-            print('\nDiretório não encontrado!\n') 
-        else:
-            # lê variáveis da tabela
+        # lê o arquivo
+        try:
             with open(path+arquivo_relatorio_data, 'r') as csv_file:
                 for linha in csv_file:
                     dados_tabela = linha.split(',')
@@ -96,6 +93,8 @@ while True:
                     horas.append(dados_tabela[3])
                     minutos.append(dados_tabela[4])
                     commit.append(dados_tabela[5])
+        except FileNotFoundError:
+            print(f'\nDiretório {path+arquivo_relatorio_data} não encontrado!\n')
 
         # cálculo de horas:minutos
         soma_minutos: int = 0
@@ -112,22 +111,21 @@ while True:
         arquivo_relatorio = f'relatorio_{meses_dict[mes_relatorio]}_{ano_relatorio}.txt'
         path: str = 'relatorios/'
 
-        # testa o path
-        if not os.path.exists(path+arquivo_relatorio):
-            print('\nDiretório não encontrado!\n')
-
-        # escreve relatório
-        with open(path+arquivo_relatorio , 'w') as relatorio:
-            relatorio.write(f'Horas trabalhadas no mês de {meses_dict[mes_relatorio]}:')
-            relatorio.write('\n\n')
-            relatorio.write('Dia\t\tHoras\tCommit')
-            relatorio.write('\n')
-            relatorio.write('-'*42)
-            relatorio.write('\n')
-            for i, _ in enumerate(dia):
-                relatorio.write(f'{dia[i]}/{mes[i]}\t{horas[i]}:{minutos[i]}\t{commit[i]}')
-            relatorio.write(f'\nTotal de horas trabalhadas para o mês de {meses_dict[mes_relatorio]}: {soma_horas}:{soma_minutos}h')
-
+        # escreve o relatório
+        try:
+            with open(path+arquivo_relatorio , 'w') as relatorio:
+                relatorio.write(f'Horas trabalhadas no mês de {meses_dict[mes_relatorio]}:')
+                relatorio.write('\n\n')
+                relatorio.write('Dia\t\tHoras\tCommit')
+                relatorio.write('\n')
+                relatorio.write('-'*42)
+                relatorio.write('\n')
+                for i, _ in enumerate(dia):
+                    relatorio.write(f'{dia[i]}/{mes[i]}\t{horas[i]}:{minutos[i]}\t{commit[i]}')
+                relatorio.write(f'\nTotal de horas trabalhadas para o mês de {meses_dict[mes_relatorio]}: {soma_horas}:{soma_minutos}h')
+        except FileNotFoundError:
+            print(f'\nDiretório {path+arquivo_relatorio} não encontrado!\n')
+    
     else:
         break
 print('\n\nObrigado!\n')
